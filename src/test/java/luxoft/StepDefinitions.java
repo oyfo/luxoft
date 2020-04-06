@@ -89,8 +89,7 @@ public class StepDefinitions {
 	}
 		
     @After()
-    public void closeBrowser() throws InterruptedException {
-    	Thread.sleep(4000);
+    public void closeBrowser() {
     	ubshomepage.quitDriver();
     }
 }
