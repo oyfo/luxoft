@@ -1,5 +1,6 @@
 package luxoft;
 
+import static org.junit.Assert.assertTrue;
 
 import components.PageObject;
 import io.cucumber.java.After;
@@ -8,13 +9,22 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-
 public class StepDefinitions { 
 	private PageObject ubshomepage;
+	private String notFiltered;
+	private String  filtered;
 	
 	@Given("^I am on UBS homepage")
 	public void openUbsHomepage() {
-		ubshomepage.openHompepageAndAcceptCookies(ubshomepage.getDriver());
+		ubshomepage.openHompepage(ubshomepage.getDriver());
+		ubshomepage.acceptCookies();
+	}
+	
+	@Given("I open {string} and verify header {string}")
+	public void upenPage(String url, String header) {
+		ubshomepage.openUrl(ubshomepage.getDriver(), url);
+		ubshomepage.acceptCookies();
+		ubshomepage.verifyHeader(header);
 	}
 	
 	@When("^I click on 'UBS logins' button")
@@ -31,8 +41,35 @@ public class StepDefinitions {
 	public void enterUserAndPassword(String login, String password) {
 		ubshomepage.enterLogin(login);
 		ubshomepage.enterPassword(password);
-		ubshomepage.submitUsClientAccoutLogin();
+		ubshomepage.submitUsClientAccoutLogin();	
+	}
+	
+	@When("I click \"Careers\" dropdown and \"Search jobs\" item")
+	public void iClickDropdownAndItem() {
+		ubshomepage.clicCareers();
+		ubshomepage.clickSearchJobs();
+	}
+	
+	@When("I chose careers for professionals in {string}")
+	public void iChoseCareersForProfessionalsInRegion(String region) {
+		ubshomepage.chooseRegion(region);
 		
+	}
+	
+	@When("I save number of all offers")
+	public void iSaveAllOffers() {
+		notFiltered = ubshomepage.saveNumberOfOffers();
+		
+	}
+	
+	@When("I search for \"QA\" and \"Poland\"")
+	public void iSearchForQaAndPoland() throws InterruptedException {
+		filtered = ubshomepage.filterJobs();
+	}
+
+	@Then("number of filtered results shhould be smaller")
+	public void numberFfFilteredResultsShhouldBeSmaller() {
+		assertTrue(Integer.parseInt(notFiltered) > Integer.parseInt(filtered));
 	}
 	
 	@Then("I should see warning notification")
@@ -40,15 +77,20 @@ public class StepDefinitions {
 		ubshomepage.loginWarningVisible();	
 	}
 	
+	@Then("footer is available")
+	public void footer_is_available() {
+		ubshomepage.verifyBottomFooter();
+	}
+	
 	@Before
 	public void before() {
 		String browser = System.getProperty("browserName");
 		ubshomepage = new PageObject(browser);
 	}
-	
+		
     @After()
     public void closeBrowser() throws InterruptedException {
-    	Thread.sleep(2000);
+    	Thread.sleep(4000);
     	ubshomepage.quitDriver();
     }
 }
