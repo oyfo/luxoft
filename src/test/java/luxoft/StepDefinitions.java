@@ -17,13 +17,11 @@ public class StepDefinitions {
 	@Given("^I am on UBS homepage")
 	public void openUbsHomepage() {
 		ubshomepage.openHompepage(ubshomepage.getDriver());
-		ubshomepage.acceptCookies();
 	}
 	
 	@Given("I open {string} and verify header {string}")
 	public void upenPage(String url, String header) {
 		ubshomepage.openUrl(ubshomepage.getDriver(), url);
-		ubshomepage.acceptCookies();
 		ubshomepage.verifyHeader(header);
 	}
 	

@@ -1,10 +1,12 @@
 package components;
 
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import parameters.generalParameters;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -48,21 +50,22 @@ public class PageObject {
 	private static WebElement keyWordSearch;
 	
 	WebDriverWait wait;
+	ConfigReader configReader = new ConfigReader();
 	
 	public PageObject(String browser) {
 		if (isNullOrEmpty(browser)) {
 			System.out.println("Using CHROME as deafult browser");
-			System.setProperty("webdriver.chrome.driver", generalParameters.CHROMEDRIVER_PATH);
+			System.setProperty("webdriver.chrome.driver", configReader.getProp("drivers.chrome_path"));
 			driver = new ChromeDriver();
 		} else if ( browser.equalsIgnoreCase("chrome")) {
-			System.setProperty("webdriver.chrome.driver", generalParameters.CHROMEDRIVER_PATH);
+			System.setProperty("webdriver.chrome.driver", configReader.getProp("drivers.chrome_path"));
 			driver = new ChromeDriver();
 		} else if (browser.equalsIgnoreCase("firefox")) {
-			System.setProperty("webdriver.gecko.driver", generalParameters.FIREFOXDRIVER_PATH);
+			System.setProperty("webdriver.gecko.driver", configReader.getProp("drivers.firefox_path"));
 			driver = new FirefoxDriver();
 		} else {
 			System.out.println("only 'chrome' and 'firefox' browsers avaliable. using CHROME as deafult");
-			System.setProperty("webdriver.chrome.driver", generalParameters.CHROMEDRIVER_PATH);
+			System.setProperty("webdriver.chrome.driver", configReader.getProp("drivers.chrome_path"));
 			driver = new ChromeDriver();
 		}
 		driver.manage().window().maximize();
@@ -79,21 +82,37 @@ public class PageObject {
 	public void openHompepage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
-		driver.get(generalParameters.HOMEPAGE);
+		driver.get(configReader.getProp("urls.homepage"));
+		acceptCookies();
 	}
 	
 	public void openUrl(WebDriver driver, String url) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
 		driver.get(url);
+		acceptCookies();
 	}
 	
 	public void acceptCookies() {
-		WebElement iframe = driver.findElement(By.xpath("//iframe"));
-		driver.switchTo().frame(iframe);
-		WebElement agree = driver.findElement(By.xpath("//span[contains(text(),'Agree to all')]"));
-		agree.click();
-		driver.switchTo().defaultContent();
+		boolean cookieFlag = false;
+		Set<Cookie> cookies = driver.manage().getCookies();
+		for (Cookie cookie: cookies) {
+			if (cookie.getName().equals(configReader.getProp("cookies.privacy.name"))) {
+				cookieFlag = true;
+			}
+		}
+		if (cookieFlag == false) {
+			Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
+
+			Cookie c = new Cookie(
+					configReader.getProp("cookies.privacy.name"),
+					configReader.getProp("cookies.privacy.value"),
+					configReader.getProp("cookies.privacy.domain"),
+					configReader.getProp("cookies.privacy.path"),
+					tomorrow);
+			driver.manage().addCookie(c);
+			driver.navigate().refresh();
+		}
 	};
 
 	public void clickUbsLogins() {
