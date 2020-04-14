@@ -18,4 +18,3 @@ public class ConfigReader {
 		return properties.getProperty(property);
 	}
 }
-
