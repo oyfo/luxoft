@@ -1,14 +1,14 @@
 package luxoft;
 
-import components.pages.UsClientAccountLogin;
+import components.pages.UsClientAccountLoginPage;
 
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class LoginStepDefinitions extends AbstractSteps{ 
-	private UsClientAccountLogin usClientLogin;
+	private UsClientAccountLoginPage usClientLogin;
 
-	@When("^I click on 'UBS logins' button")
+	@When("^I click on 'UBS logins' menu")
 	public void openUBSlogins() {
 		ubshomepage.clickUbsLogins();
 	}

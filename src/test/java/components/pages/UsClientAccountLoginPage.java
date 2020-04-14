@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 
-public class UsClientAccountLogin extends HomePage {
+public class UsClientAccountLoginPage extends HomePage {
 	@FindBy(xpath = "//input[@id='username']")
 	private WebElement userInput;
 
@@ -20,7 +20,7 @@ public class UsClientAccountLogin extends HomePage {
 	@FindBy(xpath = "//div[contains(@class, 'error-notification')]")
 	private static WebElement loginWarning;
 
-	public UsClientAccountLogin(WebDriver driver) {
+	public UsClientAccountLoginPage(WebDriver driver) {
 		super(driver);
 		this.driver = driver;
 		wait = new WebDriverWait(driver, 7);
@@ -40,7 +40,5 @@ public class UsClientAccountLogin extends HomePage {
     
     public void loginWarningVisible() {
     	wait.until(ExpectedConditions.visibilityOf(loginWarning));
-    	
     }
-
 }

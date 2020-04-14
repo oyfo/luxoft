@@ -6,7 +6,7 @@ import components.Utils;
 import components.pages.HomePage;
 
 public class AbstractSteps {
-	private WebDriver driver;
+	protected WebDriver driver;
 	protected static HomePage ubshomepage;
 
 	public void createHomepage() {
